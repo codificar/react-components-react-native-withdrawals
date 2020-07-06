@@ -30,7 +30,7 @@ this.state = {
 	  bankAccount: "98564"
 	}
 	  // ...
-	]
+ ]
 	
 };
 // ...
