@@ -35,8 +35,8 @@ this.state = {
 };
 // ...
 <WithdrawalsReport
-	withdrawals={this.state.withdrawals}
-	formattedBalance={this.state.formattedBalance}
+  withdrawals={this.state.withdrawals}
+  formattedBalance={this.state.formattedBalance}
 />
 // ...
 }
@@ -47,5 +47,5 @@ this.state = {
 
 | Prop  | Default  | Type | Description |
 | :------------ |:---------------:| :---------------:| :-----|
-| withdrawals | - | `object` | array of objects in this format: { bank: "Bradesco", formattedValue: "R$54,90", date: "2020-12-03 10:50:20", bankAccount: "481415" } |
+| withdrawals | - | `object` | array of objects in this format: { bank: "String", formattedValue: "String", date: "YYYY-MM-DDDD HH:mm:ss", bankAccount: "String" } |
 | formattedBalance | - | `string` | Balance with the value already formatted |
