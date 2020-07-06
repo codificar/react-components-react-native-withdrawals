@@ -8,10 +8,6 @@
     },
     "license": "MIT",
 
-    "devDependencies": {
-      "react-native-image-converter": "^0.4.2"
-    },
-
     "repository": {
       "type": "git",
       "url": "git+https://github.com/codificar/react-native-withdrawals"
