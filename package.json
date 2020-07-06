@@ -8,7 +8,7 @@
     },
     "license": "MIT",
 
-    "peerDependencies": {
+    "devDependencies": {
       "react-native-image-converter": "^0.4.2"
     },
 
