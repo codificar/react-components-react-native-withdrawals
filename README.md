@@ -4,11 +4,12 @@ A bank withdrawal reporting component for react-native
 ## Install
 
 ```bash
-npm install --save https://git.codificar.com.br/laravel-libs/laravel-withdrawals.git
+add in package.json:
+"PROJECTNAME": "git+https://GITLAB-USER:PASSWORD@git.codificar.com.br/react-components/PROJECTNAME.git",
 ```
 
 ## Usage
-Esse componente funciona muito bem com: https://git.codificar.com.br/laravel-libs/laravel-withdrawals
+works well with: https://git.codificar.com.br/laravel-libs/laravel-withdrawals
 
 ```javascript
 
