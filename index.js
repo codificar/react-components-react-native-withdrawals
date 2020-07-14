@@ -113,19 +113,19 @@ class WithdrawalsReport extends Component {
             <View style={styles.body}>
 
                 {/* Flex vertical of 1/10 */}
-                <View style={{flex: 1, backgroundColor: "white"}}>
+                <View style={{flex: 0.5, backgroundColor: "white"}}>
                     <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>X</Text>
                 </View>
 
                 {/* Flex vertical of 2/10 */}
-                <View style={{flex: 2, backgroundColor: "white",  justifyContent: 'center', alignItems: 'center'}}>
+                {/* <View style={{flex: 2, backgroundColor: "white",  justifyContent: 'center', alignItems: 'center'}}>
                     <Text>Saldo atual: {this.props.formattedBalance}</Text>
                     <Button
                         title="Solicitar saque"
                         accessibilityLabel="Solicitar saque"
                         color="blue"
                     />
-                </View>
+                </View> */}
 
                 {this.state.withdrawals && this.state.withdrawals.length > 0 ? (
                     <View style={{flex: 7}}>{/* Flex vertical of 7/10 */}
