@@ -6,7 +6,9 @@ import {
     FlatList, 
     StyleSheet, 
     Image,
-    Button
+    Button,
+    Modal,
+    TextInput
 } from "react-native";
 
 //Moment date
@@ -19,12 +21,34 @@ class WithdrawalsReport extends Component {
         this.state = {
             expanded: false,
             content: "",
-            withdrawals: []
+            withdrawals: [],
+            modalVisible: false
         }
     }
 
     componentDidMount() {
-        this.convertWithdrawalsFormat();
+        console.log("url report: ", this.props.urlReport, this.props.providerId, this.props.providerToken );
+        fetch(this.props.urlReport,{
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                provider_id: this.props.providerId,
+                token: this.props.providerToken
+            })
+        })
+        .then((response) => response.json())
+        .then((json) => {
+
+            console.log("ress: ", json);
+            this.convertWithdrawalsFormat(json.withdrawals_report);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+        // this.convertWithdrawalsFormat();
     }
 
     /**
@@ -66,8 +90,7 @@ class WithdrawalsReport extends Component {
         ]
 
      */
-    convertWithdrawalsFormat() {
-        var aux = this.props.withdrawals;
+    convertWithdrawalsFormat(aux) {
         //Pega todos os anos-meses no formato: 'YYYY-MM' para depois agrupar os que sao do mesmo mes
         //Get all years-months in format 'YYYY-MM' because after we will agroup the same year/month
         var yearsMonths = [];
@@ -106,29 +129,26 @@ class WithdrawalsReport extends Component {
             withdrawals: newArray
         });
     }
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+    }
 
     render() {       
-     
+        const { modalVisible } = this.state;
         return (
             <View style={styles.body}>
 
                 {/* Flex vertical of 1/10 */}
-                <View style={{flex: 0.5, backgroundColor: "white"}}>
-                    <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>X</Text>
+                <View style={{flex: 1, backgroundColor: "white"}}>
+                    <TouchableOpacity 
+                        onPress={() =>  this.props.onClose()} 
+                    >
+                        <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>X</Text>
+                    </TouchableOpacity>
                 </View>
 
-                {/* Flex vertical of 2/10 */}
-                {/* <View style={{flex: 2, backgroundColor: "white",  justifyContent: 'center', alignItems: 'center'}}>
-                    <Text>Saldo atual: {this.props.formattedBalance}</Text>
-                    <Button
-                        title="Solicitar saque"
-                        accessibilityLabel="Solicitar saque"
-                        color="blue"
-                    />
-                </View> */}
-
                 {this.state.withdrawals && this.state.withdrawals.length > 0 ? (
-                    <View style={{flex: 7}}>{/* Flex vertical of 7/10 */}
+                    <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
                         {console.log("primeiro flatlist: ", this.state.withdrawals)}
                         <FlatList
                             data={this.state.withdrawals}
@@ -136,7 +156,7 @@ class WithdrawalsReport extends Component {
                             renderItem={({ item, index }) => (
                                 
                                 <View>
-                                    {item.title && item.withdrawals.length > 0 ? (
+                                    {item && item.title && item.withdrawals.length > 0 ? (
                                         <View>
                                             <Text style={{padding: 15, fontWeight: "bold", fontSize: 23}}>{item.title}</Text>
                                             
@@ -182,9 +202,66 @@ class WithdrawalsReport extends Component {
                             )}
                         />
                     </View>
-                ) : ( 
-                    null 
-                )}
+                ) : ( null )}
+
+
+                {/* Flex vertical of 1/10 */}
+                {this.state.withdrawals && this.state.withdrawals.length > 0 ? (
+                    <View style={{flex: 1, backgroundColor: "#e3e3e3",  justifyContent: 'center', alignItems: 'center'}}>
+                        <TouchableOpacity 
+                            onPress={() => this.setModalVisible(true)} 
+                        >
+                            <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>Solicitar saque</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : ( null )}
+
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                    }}
+                    >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modaltitle}>Realizar saque</Text>
+                            <Text style={styles.modalText}>Valor mínimo: </Text>
+                            <Text style={styles.modalText}>Valor máximo: </Text>
+                            <Text style={styles.modalText}>Taxa de Saque: </Text>
+
+                            <TextInput
+								style={{height: 40,
+									marginBottom: 15,
+									borderBottomWidth: 1}}
+                                keyboardType='numeric'
+								placeholder="DIGITE O VALOR"
+							/>
+
+
+                            <View style={{flexDirection: "row"}}>
+                                <TouchableOpacity
+                                    style={{ ...styles.openButton, backgroundColor: "grey" }}
+                                    onPress={() => {
+                                    this.setModalVisible(!modalVisible);
+                                    }}
+                                >
+                                    <Text style={styles.textStyle}>Cancelar</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                    onPress={() => {
+                                    this.setModalVisible(!modalVisible);
+                                    }}
+                                >
+                                    <Text style={styles.textStyle}>Sacar</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         )
     }
@@ -199,7 +276,53 @@ const styles = StyleSheet.create({
         paddingVertical: 5, 
         borderBottomWidth: 0.5,
         borderBottomColor: '#C4C4C4'
-    }
+    },
+
+
+
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+      },
+      openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginHorizontal: 5
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modaltitle: {
+        marginBottom: 15,
+        fontSize: 20,
+        textAlign: "center",
+        fontWeight: 'bold'
+      },
+      modalText: {
+        marginBottom: 10,
+        textAlign: "center"
+      }
 });
 
 export default WithdrawalsReport;
