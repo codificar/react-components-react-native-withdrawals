@@ -5,7 +5,7 @@ A bank withdrawal reporting component for react-native
 
 ```bash
 add in package.json:
-"PROJECTNAME": "git+https://GITLAB-USER:PASSWORD@git.codificar.com.br/react-components/PROJECTNAME.git",
+"react-native-withdrawals": "git+https://libs:ofImhksJ@git.codificar.com.br/react-components/react-native-withdrawals.git",
 ```
 
 ## Usage
