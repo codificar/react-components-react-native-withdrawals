@@ -22,12 +22,23 @@ class WithdrawalsReport extends Component {
             expanded: false,
             content: "",
             withdrawals: [],
-            modalVisible: false
+            modalVisible: false,
+            currentBalance: 0,
+            withdrawSettings: {
+                with_draw_enabled: null,
+                with_draw_max_limit: null,
+                with_draw_min_limit: null,
+                with_draw_tax: null
+            },
+            totalToAddWithdraw: 0
         }
     }
 
     componentDidMount() {
-        console.log("url report: ", this.props.urlReport, this.props.providerId, this.props.providerToken );
+        this.getWithdrawalsReport();
+    }
+
+    getWithdrawalsReport() {
         fetch(this.props.urlReport,{
             method: 'POST',
             headers: {
@@ -43,12 +54,11 @@ class WithdrawalsReport extends Component {
         .then((json) => {
 
             console.log("ress: ", json);
-            this.convertWithdrawalsFormat(json.withdrawals_report);
+            this.convertWithdrawalsFormat(json.withdrawals_report, json.withdraw_settings, json.current_balance);
         })
         .catch((error) => {
             console.error(error);
         });
-        // this.convertWithdrawalsFormat();
     }
 
     /**
@@ -60,7 +70,8 @@ class WithdrawalsReport extends Component {
                 bank: "Bradesco",
                 formattedValue: "R$54,90",
                 date: "2020-12-03 HH:mm:ss",
-                bankAccount: "481415"
+                bankAccount: "481415",
+                type: "Solicitado"
             },
             {
                 ...
@@ -77,7 +88,8 @@ class WithdrawalsReport extends Component {
                         bank: "Bradesco",
                         formattedValue: "R$54,90",
                         date: "2020-12-03 HH:mm:ss",
-                        bankAccount: "481415"
+                        bankAccount: "481415",
+                        type: "Solicitado"
                     },
                     {
                         ...
@@ -90,21 +102,73 @@ class WithdrawalsReport extends Component {
         ]
 
      */
-    convertWithdrawalsFormat(aux) {
+
+    checkWithdrawStatus(type) {
+        var text = "";
+        if(type == "requested") {
+            text = "Solicitado";
+        } else if (type == "awaiting_return") {
+            text = "Em processamento"
+        } else if (type == "concluded") {
+            text = "Concluído"
+        } else if (type == "error") {
+            text = "Erro"
+        }
+        return text;
+    }
+    confirmAddWithdraw() {
+        console.log("aqui!", this.state.totalToAddWithdraw);
+        if(this.state.totalToAddWithdraw) {
+            fetch(this.props.urlAdd,{
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    provider_id: this.props.providerId,
+                    token: this.props.providerToken,
+                    withdraw_value: this.state.totalToAddWithdraw
+                })
+            })
+            .then((response) => response.json())
+            .then((json) => {
+                console.log("json: ", json);
+                if(json.success) {
+                    this.props.onWithdrawAdded(true);
+
+                    //atualiza os relatorio de saques
+                    this.getWithdrawalsReport();
+                } else {
+                    this.props.onWithdrawAdded(false);
+                }
+
+            })
+            .catch((error) => {
+                console.error(error);
+                console.log("errr:", error);
+                this.props.onWithdrawAdded(false);
+            });
+        } else {
+            this.props.onWithdrawAdded(false);
+        }
+    }
+    convertWithdrawalsFormat(withdrawReport, withdrawSettings, currentBalance) {
         //Pega todos os anos-meses no formato: 'YYYY-MM' para depois agrupar os que sao do mesmo mes
         //Get all years-months in format 'YYYY-MM' because after we will agroup the same year/month
         var yearsMonths = [];
         var newArray = [];
-        for(let i=0; i < aux.length; i++) {
+        for(let i=0; i < withdrawReport.length; i++) {
             //get the year and the month
-            var currentYearMonth = moment(aux[i].date, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM");
+            var currentYearMonth = moment(withdrawReport[i].date, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM");
             var arrayPosition = yearsMonths.indexOf(currentYearMonth);
 
             var dataFormatted = {
-                bank: aux[i].bank,
-                formattedValue: aux[i].formattedValue,
-                date: moment(aux[i].date, "YYYY-MM-DD HH:mm:ss").format("ddd, D MMM"),
-                bankAccount: aux[i].bankAccount,
+                bank: withdrawReport[i].bank,
+                formattedValue: withdrawReport[i].formattedValue,
+                date: moment(withdrawReport[i].date, "YYYY-MM-DD HH:mm:ss").format("ddd, D MMM"),
+                bankAccount: withdrawReport[i].bankAccount,
+                type: withdrawReport[i].type,
             }
             
             //Check if exists this year/month in array
@@ -126,7 +190,9 @@ class WithdrawalsReport extends Component {
         }
         console.log("novo array: ", newArray);
 		this.setState({
-            withdrawals: newArray
+            withdrawals: newArray,
+            currentBalance: currentBalance,
+            withdrawSettings: withdrawSettings
         });
     }
     setModalVisible = (visible) => {
@@ -181,6 +247,7 @@ class WithdrawalsReport extends Component {
                                                                     <Text style={{fontWeight: "bold", color: "black", fontSize: 15}}>Transação</Text>
                                                                     <Text style={{color: "#C4C4C4"}}>{item.date}</Text>
                                                                     <Text style={{color: "#C4C4C4"}}>Banco: {item.bank} - {item.bankAccount}</Text>
+                                                                    <Text style={{color: "#C4C4C4"}}>Status: {this.checkWithdrawStatus(item.type)}</Text>
                                                                 </View>
 
                                                                 {/* Flex horizontal of 2/7 */}
@@ -228,16 +295,19 @@ class WithdrawalsReport extends Component {
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
                             <Text style={styles.modaltitle}>Realizar saque</Text>
-                            <Text style={styles.modalText}>Valor mínimo: </Text>
-                            <Text style={styles.modalText}>Valor máximo: </Text>
-                            <Text style={styles.modalText}>Taxa de Saque: </Text>
+                            <Text style={styles.modalText}>Valor mínimo: {this.state.withdrawSettings.with_draw_min_limit}</Text>
+                            <Text style={styles.modalText}>Valor máximo: {this.state.withdrawSettings.with_draw_max_limit}</Text>
+                            <Text style={styles.modalText}>Taxa de Saque: {this.state.withdrawSettings.with_draw_tax}</Text>
+                            <Text style={styles.modalText}>Seu saldo: {this.state.currentBalance}</Text>
 
                             <TextInput
 								style={{height: 40,
 									marginBottom: 15,
 									borderBottomWidth: 1}}
                                 keyboardType='numeric'
-								placeholder="DIGITE O VALOR"
+                                placeholder="DIGITE O VALOR"
+                                onChangeText={text => this.setState({ totalToAddWithdraw: text })}
+                                value={this.state.totalToAddWithdraw}
 							/>
 
 
@@ -245,7 +315,7 @@ class WithdrawalsReport extends Component {
                                 <TouchableOpacity
                                     style={{ ...styles.openButton, backgroundColor: "grey" }}
                                     onPress={() => {
-                                    this.setModalVisible(!modalVisible);
+                                        this.setModalVisible(!modalVisible);
                                     }}
                                 >
                                     <Text style={styles.textStyle}>Cancelar</Text>
@@ -253,7 +323,8 @@ class WithdrawalsReport extends Component {
                                 <TouchableOpacity
                                     style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
                                     onPress={() => {
-                                    this.setModalVisible(!modalVisible);
+                                        this.setModalVisible(!modalVisible);
+                                        this.confirmAddWithdraw();
                                     }}
                                 >
                                     <Text style={styles.textStyle}>Sacar</Text>
