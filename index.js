@@ -30,15 +30,18 @@ class WithdrawalsReport extends Component {
                 with_draw_min_limit: null,
                 with_draw_tax: null
             },
-            totalToAddWithdraw: 0
+            totalToAddWithdraw: ""
         }
     }
 
     componentDidMount() {
         this.getWithdrawalsReport();
+        console.log("aqui chegou!!!");
     }
 
     getWithdrawalsReport() {
+        console.log("aqui: ", this.props.providerId, this.props.providerToken);
+        console.log("ffffffff");
         fetch(this.props.urlReport,{
             method: 'POST',
             headers: {
@@ -57,6 +60,7 @@ class WithdrawalsReport extends Component {
             this.convertWithdrawalsFormat(json.withdrawals_report, json.withdraw_settings, json.current_balance);
         })
         .catch((error) => {
+            console.log("nex");
             console.error(error);
         });
     }
@@ -307,7 +311,7 @@ class WithdrawalsReport extends Component {
                                 keyboardType='numeric'
                                 placeholder="DIGITE O VALOR"
                                 onChangeText={text => this.setState({ totalToAddWithdraw: text })}
-                                value={this.state.totalToAddWithdraw}
+                                value={String(this.state.totalToAddWithdraw)}
 							/>
 
 
