@@ -36,12 +36,9 @@ class WithdrawalsReport extends Component {
 
     componentDidMount() {
         this.getWithdrawalsReport();
-        console.log("aqui chegou!!!");
     }
 
     getWithdrawalsReport() {
-        console.log("aqui: ", this.props.providerId, this.props.providerToken);
-        console.log("ffffffff");
         fetch(this.props.urlReport,{
             method: 'POST',
             headers: {
@@ -56,11 +53,9 @@ class WithdrawalsReport extends Component {
         .then((response) => response.json())
         .then((json) => {
 
-            console.log("ress: ", json);
             this.convertWithdrawalsFormat(json.withdrawals_report, json.withdraw_settings, json.current_balance);
         })
         .catch((error) => {
-            console.log("nex");
             console.error(error);
         });
     }
@@ -121,7 +116,6 @@ class WithdrawalsReport extends Component {
         return text;
     }
     confirmAddWithdraw() {
-        console.log("aqui!", this.state.totalToAddWithdraw);
         if(this.state.totalToAddWithdraw) {
             fetch(this.props.urlAdd,{
                 method: 'POST',
@@ -137,7 +131,6 @@ class WithdrawalsReport extends Component {
             })
             .then((response) => response.json())
             .then((json) => {
-                console.log("json: ", json);
                 if(json.success) {
                     this.props.onWithdrawAdded(true);
 
@@ -150,7 +143,6 @@ class WithdrawalsReport extends Component {
             })
             .catch((error) => {
                 console.error(error);
-                console.log("errr:", error);
                 this.props.onWithdrawAdded(false);
             });
         } else {
@@ -192,7 +184,6 @@ class WithdrawalsReport extends Component {
                 newArray[arrayPosition].withdrawals.push(dataFormatted);
             }
         }
-        console.log("novo array: ", newArray);
 		this.setState({
             withdrawals: newArray,
             currentBalance: currentBalance,
@@ -219,7 +210,6 @@ class WithdrawalsReport extends Component {
 
                 {this.state.withdrawals && this.state.withdrawals.length > 0 ? (
                     <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
-                        {console.log("primeiro flatlist: ", this.state.withdrawals)}
                         <FlatList
                             data={this.state.withdrawals}
                             keyExtractor={(x, i) => i.toString()}
