@@ -229,7 +229,7 @@ class WithdrawalsReport extends Component {
 
                                                         {/* Flex horizontal of 1/8 */}
                                                         <View style={{ flex: 1, backgroundColor:"white", justifyContent: 'center', alignItems: 'center' }}>
-                                                            <Image style={{flex: 1, width: 30, height: 30, resizeMode: 'contain'}} source={require('./bank-profile.png')} />
+                                                            <Image style={{flex: 1, width: 30, height: 30, resizeMode: 'contain'}} source={require('./img/bank-profile.png')} />
                                                         </View>
                                                         
                                                         {/* Flex horizontal of 7/8 */}
@@ -263,19 +263,29 @@ class WithdrawalsReport extends Component {
                             )}
                         />
                     </View>
-                ) : ( null )}
+                ) : ( 
+                    <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
+                        <View style={{flex: 1, alignItems: "center", paddingTop: 100}}>
+                            <Image
+                                source={require('./img/icon_balnk_state.png')}
+                                style={{ width: 150, height: 150 }}
+                            />
+                            <Text style={{color: "#cccccc"}}>
+                                Nenhum saque encontrado
+                            </Text>
+                        </View>
+                    </View>
+                 )}
 
 
                 {/* Flex vertical of 1/10 */}
-                {this.state.withdrawals && this.state.withdrawals.length > 0 ? (
-                    <View style={{flex: 1, backgroundColor: "#e3e3e3",  justifyContent: 'center', alignItems: 'center'}}>
-                        <TouchableOpacity 
-                            onPress={() => this.setModalVisible(true)} 
-                        >
-                            <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>Solicitar saque</Text>
-                        </TouchableOpacity>
-                    </View>
-                ) : ( null )}
+                <TouchableOpacity 
+                    style={{flex: 1, backgroundColor: "#e3e3e3",  justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => this.setModalVisible(true)} 
+                >
+
+                    <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>Solicitar saque</Text>
+                </TouchableOpacity>
 
 
                 <Modal
