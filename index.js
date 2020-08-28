@@ -280,11 +280,22 @@ class WithdrawalsReport extends Component {
 
                 {/* Flex vertical of 1/10 */}
                 <TouchableOpacity 
-                    style={{flex: 1, backgroundColor: "#647a63",  justifyContent: 'center', alignItems: 'center'}}
+                    style={{
+                        flex: 1, 
+                        backgroundColor: this.props.buttonColor ? this.props.buttonColor : "#647a63",  
+                        justifyContent: 'center', 
+                        alignItems: 'center'
+                    }}
                     onPress={() => this.setModalVisible(true)} 
                 >
 
-                    <Text style={{fontSize: 20, padding: 20, color: "white", fontWeight: "bold"}}>Solicitar saque</Text>
+                    <Text style={{
+                            fontSize: 20, 
+                            padding: 20, 
+                            color: this.props.textColor ? this.props.textColor : "white", 
+                            fontWeight: 
+                            "bold"
+                        }}>Solicitar saque</Text>
                 </TouchableOpacity>
 
 
