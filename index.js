@@ -301,7 +301,7 @@ class WithdrawalsReport extends Component {
                                 keyboardType='numeric'
                                 placeholder="DIGITE O VALOR"
                                 onChangeText={text => this.setState({ totalToAddWithdraw: text })}
-                                value={String(this.state.totalToAddWithdraw)}
+                                value={this.state.totalToAddWithdraw ? String(this.state.totalToAddWithdraw) : null}
 							/>
 
 
