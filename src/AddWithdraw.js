@@ -31,16 +31,7 @@ class AddWithdraw extends Component {
             },
             totalToAddWithdraw: "",
             bankSelected: 0,
-            providerBanks: [
-                {
-                    id: 5,
-                    bank_name: "nome do banco de teste"
-                },
-                {
-                    id: 4,
-                    bank_name: "nome do banco 2"
-                },
-            ]
+            providerBanks: []
         }
 
 
@@ -90,7 +81,8 @@ class AddWithdraw extends Component {
             console.log("json: ", json);
             this.setState({
                 currentBalance: json.current_balance,
-                withdrawSettings: json.withdraw_settings
+                withdrawSettings: json.withdraw_settings,
+                providerBanks: json.provider_banks
             });
             
         })
@@ -174,8 +166,8 @@ class AddWithdraw extends Component {
                                             this.setState({bankSelected: itemValue})
                                         }>
                                         <Picker.Item value={0} label={this.strings.select} />
-                                        {this.state.providerBanks.map((bank, i) => {
-                                            return <Picker.Item key={i} value={bank.id} label={bank.bank_name} />
+                                        {this.state.providerBanks.length && this.state.providerBanks.map((bank, i) => {
+                                            return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
                                         })}
                                     </Picker>
 
