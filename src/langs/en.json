@@ -15,6 +15,11 @@
   "your_balance": "Your balance",
   "write_value": "Write value",
   "cancel": "Cancel",
-  "add": "Add"
+  "add": "Add",
+  "select": "Select bank",
+  "select_bank": "Please, select a account",
+  "select_value": "Please, select a value",
+  "add_withdraw_success": "Withdraw added",
+  "error_add_withdraw": "It is not possible add withdraw"
   
 }

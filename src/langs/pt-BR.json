@@ -15,6 +15,11 @@
   "your_balance": "Seu saldo",
   "write_value": "DIGITE O VALOR",
   "cancel": "Cancelar",
-  "add": "Sacar"
+  "add": "Sacar",
+  "select": "Selecionar banco",
+  "select_bank": "Por favor, selecione a conta bancária",
+  "select_value": "Por favor, selecione o valor a ser sacado",
+  "add_withdraw_success": "Saque realizado com sucesso",
+  "error_add_withdraw": "Não foi possível realizar o saque"
 
 }

@@ -9,11 +9,13 @@ import {
     Button,
     Modal,
     TextInput,
-    BackHandler
+    BackHandler,
+    Picker
 } from "react-native";
 
 //Moment date
 import moment from "moment";
+
 
 class AddWithdraw extends Component {
 
@@ -27,7 +29,18 @@ class AddWithdraw extends Component {
                 with_draw_min_limit: null,
                 with_draw_tax: null
             },
-            totalToAddWithdraw: ""
+            totalToAddWithdraw: "",
+            bankSelected: 0,
+            providerBanks: [
+                {
+                    id: 5,
+                    bank_name: "nome do banco de teste"
+                },
+                {
+                    id: 4,
+                    bank_name: "nome do banco 2"
+                },
+            ]
         }
 
 
@@ -88,7 +101,19 @@ class AddWithdraw extends Component {
 
 
     confirmAddWithdraw() {
-        if(this.state.totalToAddWithdraw) {
+
+        //Check if bank is selected
+        if(!this.state.bankSelected) {
+            this.props.onWithdrawAdded(false, this.strings.select_bank, false); 
+        }
+
+        //Check if user select the value to add withdraw
+        else if(!this.state.totalToAddWithdraw) {
+            this.props.onWithdrawAdded(false, this.strings.select_value, false);
+        } 
+        //If all is ok, call api
+        else {
+            console.log("selec: ", this.state.bankSelected);
             fetch(this.props.urlAdd,{
                 method: 'POST',
                 headers: {
@@ -105,18 +130,16 @@ class AddWithdraw extends Component {
             .then((json) => {
                 if(json.success) {
                     //atualiza os relatorio de saques
-                    this.props.onWithdrawAdded(true);
+                    this.props.onWithdrawAdded(true, this.strings.add_withdraw_success, true);
                 } else {
-                    this.props.onWithdrawAdded(false);
+                    this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
                 }
 
             })
             .catch((error) => {
                 console.error(error);
-                this.props.onWithdrawAdded(false);
+                this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
             });
-        } else {
-            this.props.onWithdrawAdded(false);
         }
     }
     
@@ -145,6 +168,16 @@ class AddWithdraw extends Component {
                                     <Text style={styles.modalText}>{this.strings.withdraw_tax}: {this.state.withdrawSettings.with_draw_tax}</Text>
                                     <Text style={styles.modalText}>{this.strings.your_balance}: {this.state.currentBalance}</Text>
 
+                                    <Picker
+                                        selectedValue={this.state.bankSelected}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.setState({bankSelected: itemValue})
+                                        }>
+                                        <Picker.Item value={0} label={this.strings.select} />
+                                        {this.state.providerBanks.map((bank, i) => {
+                                            return <Picker.Item key={i} value={bank.id} label={bank.bank_name} />
+                                        })}
+                                    </Picker>
 
                                     <TextInput
                                         style={{height: 40,

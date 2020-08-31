@@ -39,9 +39,11 @@ class WithdrawalsReport extends Component {
     /**
      * When withdraw was added, send event for project. The project can do a alert message.
      */
-	onWithdrawAdded(status) {
-        this.props.onWithdrawAdded(status);
-        this.setState({ isInAddScreen: false });
+	onWithdrawAdded(status, msg, closeAddWithdrawScreen = true) {
+        this.props.onWithdrawAdded(status, msg);
+        if(closeAddWithdrawScreen) {
+            this.setState({ isInAddScreen: false });
+        }
     }
 
     /**
