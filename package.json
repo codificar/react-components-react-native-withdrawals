@@ -15,7 +15,7 @@
 
     "author": "Codificar",
     
-    "dependencies": {
+    "devDependencies": {
          "@react-native-community/picker": "^1.6.6"
       },
 
