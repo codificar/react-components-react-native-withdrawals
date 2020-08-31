@@ -1,0 +1,20 @@
+{
+  "requested": "Requested",
+  "awaiting_return": "Awaiting return",
+  "concluded": "Concluded",
+  "error": "Error",
+  "transaction": "Transaction",
+  "bank": "Bank",
+  "status": "Status",
+  "withdrawals_not_found": "Withdrawals not found",
+  "add_withdraw": "Add withdraw",
+  "do_withdraw": "Do withdraw",
+  "min_value": "Min value",
+  "max_value": "Max value",
+  "withdraw_tax": "Withdraw tax",
+  "your_balance": "Your balance",
+  "write_value": "Write value",
+  "cancel": "Cancel",
+  "add": "Add"
+  
+}

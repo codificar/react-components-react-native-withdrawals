@@ -1,0 +1,20 @@
+{
+  "requested": "Solicitado",
+  "awaiting_return": "Em processamento",
+  "concluded": "Concluído",
+  "error": "Erro",
+  "transaction": "Transação",
+  "bank": "Banco",
+  "status": "Status",
+  "withdrawals_not_found": "Nenhum saque encontrado",
+  "add_withdraw": "Solicitar saque",
+  "do_withdraw": "Realizar saque",
+  "min_value": "Valor mínimo",
+  "max_value": "Valor máximo",
+  "withdraw_tax": "Taxa de Saque",
+  "your_balance": "Seu saldo",
+  "write_value": "DIGITE O VALOR",
+  "cancel": "Cancelar",
+  "add": "Sacar"
+
+}
