@@ -78,7 +78,6 @@ class AddWithdraw extends Component {
         })
         .then((response) => response.json())
         .then((json) => {
-            console.log("json: ", json);
             this.setState({
                 currentBalance: json.current_balance,
                 withdrawSettings: json.withdraw_settings,
@@ -105,7 +104,6 @@ class AddWithdraw extends Component {
         } 
         //If all is ok, call api
         else {
-            console.log("selec: ", this.state.bankSelected);
             fetch(this.props.urlAdd,{
                 method: 'POST',
                 headers: {
@@ -115,7 +113,8 @@ class AddWithdraw extends Component {
                 body: JSON.stringify({
                     provider_id: this.props.providerId,
                     token: this.props.providerToken,
-                    withdraw_value: this.state.totalToAddWithdraw
+                    withdraw_value: this.state.totalToAddWithdraw,
+                    bank_account_id: this.state.bankSelected
                 })
             })
             .then((response) => response.json())
