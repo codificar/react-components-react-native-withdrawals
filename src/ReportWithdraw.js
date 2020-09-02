@@ -119,21 +119,22 @@ class ReportWithdraw extends Component {
                 type: withdrawReport[i].type,
             }
             
-            //Check if exists this year/month in array
+            //Check if not exists this year/month in array
             if(arrayPosition === -1) {
                 //Add the year-month in yearsMonths array that contain all unique years-months
                 yearsMonths.push(currentYearMonth);
 
                 //Push the new array
-                newArray[i] = {
+                newArray.push({
                     title: moment(currentYearMonth, "YYYY-MM").format("MMMM YYYY"),
                     withdrawals: [ dataFormatted ]
-                }
+                });
             }
             //If alredy exists the currentYearMonth, so just add the withdrawal in this year-month
             else {
                 //add the withdrawal in this year-month
                 newArray[arrayPosition].withdrawals.push(dataFormatted);
+                
             }
         }
 		this.setState({

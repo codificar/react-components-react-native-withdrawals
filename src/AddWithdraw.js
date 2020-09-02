@@ -147,56 +147,60 @@ class AddWithdraw extends Component {
                 </View>
 
                 
-                <View style={{flex: 9}}>{/* Flex vertical of 8/10 */}
-                    <Text style={{padding: 15, fontWeight: "bold", fontSize: 23 }}>{this.strings.add_withdraw}</Text>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
+                <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
+                    <Text style={{paddingLeft: 15, fontWeight: "bold", fontSize: 23 }}>{this.strings.add_withdraw}</Text>
 
-                            {this.state.currentBalance && this.state.withdrawSettings ? 
-                                <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between'}}>
-                                    <Text style={styles.modalText}>{this.strings.min_value}: {this.state.withdrawSettings.with_draw_min_limit}</Text>
-                                    <Text style={styles.modalText}>{this.strings.max_value}: {this.state.withdrawSettings.with_draw_max_limit}</Text>
-                                    <Text style={styles.modalText}>{this.strings.withdraw_tax}: {this.state.withdrawSettings.with_draw_tax}</Text>
-                                    <Text style={styles.modalText}>{this.strings.your_balance}: {this.state.currentBalance}</Text>
-
-                                    <Picker
-                                        selectedValue={this.state.bankSelected}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            this.setState({bankSelected: itemValue})
-                                        }>
-                                        <Picker.Item value={0} label={this.strings.select} />
-                                        {this.state.providerBanks.length && this.state.providerBanks.map((bank, i) => {
-                                            return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
-                                        })}
-                                    </Picker>
-
-                                    <TextInput
-                                        style={{height: 40,
-                                            marginBottom: 15,
-                                            borderBottomWidth: 1}}
-                                        keyboardType='numeric'
-                                        placeholder={this.strings.write_value}
-                                        onChangeText={text => this.setState({ totalToAddWithdraw: text })}
-                                        value={this.state.totalToAddWithdraw ? String(this.state.totalToAddWithdraw) : null}
-                                    />
-
-
-                                    <TouchableOpacity
-                                        style={{ ...styles.openButton, backgroundColor: this.props.buttonColor }}
-                                        onPress={() => {
-                                            this.confirmAddWithdraw();
-                                        }}
-                                    >
-                                        <Text style={{color: this.props.textColor, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>
-                                    </TouchableOpacity>
-                                
-                                </View>
-                            : null }
+                    {this.state.currentBalance && this.state.providerBanks.length > 0 ? 
+                        <View style={{flex: 1, paddingHorizontal: 30}}>
                             
+                            <View style={{marginTop: 20}}>
+                                <Text style={styles.formText}>Conta bancária</Text>
+                                <Picker
+                                    selectedValue={this.state.bankSelected}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({bankSelected: itemValue})
+                                    }>
+                                    <Picker.Item value={0} label={this.strings.select} />
+                                    {this.state.providerBanks.length && this.state.providerBanks.map((bank, i) => {
+                                        return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
+                                    })}
+                                </Picker>
+                            </View>
+
+                            <View style={{marginTop: 20}}>
+                                <Text style={styles.formText}>Valor</Text>
+                                <TextInput
+                                    style={{height: 40,
+                                        fontSize: 16,
+                                        marginHorizontal: 7,
+                                        marginBottom: 15,
+                                        borderBottomWidth: 0.2}}
+                                    keyboardType='numeric'
+                                    placeholder={this.strings.write_value}
+                                    onChangeText={text => this.setState({ totalToAddWithdraw: text })}
+                                    value={this.state.totalToAddWithdraw ? String(this.state.totalToAddWithdraw) : null}
+                                />
+                            </View>
+
+                            <View style={{marginTop: 20}}>
+                                <Text style={styles.text}>{this.strings.min_value}: {this.state.withdrawSettings.with_draw_min_limit}</Text>
+                                <Text style={styles.text}>{this.strings.max_value}: {this.state.withdrawSettings.with_draw_max_limit}</Text>
+                                <Text style={styles.text}>{this.strings.withdraw_tax}: {this.state.withdrawSettings.with_draw_tax}</Text>
+                                <Text style={styles.text}>{this.strings.your_balance}: {this.state.currentBalance}</Text>
+                            </View>
                         </View>
-                    </View>
-
-
+                    : null }
+                        
+                </View>
+                <View style={{ flex: 1 }}>{/* Flex vertical of 1/10 */}
+                    <TouchableOpacity
+                        style={{ borderRadius: 20, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                        onPress={() => {
+                            this.confirmAddWithdraw();
+                        }}
+                    >
+                        <Text style={{color: this.props.textColor, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         )
@@ -205,41 +209,24 @@ class AddWithdraw extends Component {
 
 const styles = StyleSheet.create({
 
-    centeredView: {
+    infoView: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        alignItems: "flex-start",
         marginTop: 22
       },
-      modalView: {
-        flex: 1,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignSelf: 'stretch',
-        marginHorizontal: 20,
-        marginBottom: 20,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5
-      },
-      openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        marginHorizontal: 5
-      },
-      modalText: {
+
+      text: {
         marginBottom: 15,
-        fontSize: 20,
-        textAlign: "center"
+        fontSize: 17
+      },
+      textTitle: {
+        marginBottom: 15,
+        fontSize: 17,
+        paddingLeft: 10,
+        fontWeight: "bold"
+      },
+      formText: {
+        fontSize: 17
       }
 
 });
