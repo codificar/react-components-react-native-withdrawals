@@ -10,7 +10,8 @@ import {
     Modal,
     TextInput,
     BackHandler,
-    Picker
+    Picker,
+    Dimensions
 } from "react-native";
 
 //Moment date
@@ -138,68 +139,111 @@ class AddWithdraw extends Component {
         return (
             <View style={{flex: 1}}>
                 {/* Flex vertical of 1/10 */}
-                <View style={{flex: 1, backgroundColor: "white"}}>
+                <View style={{flex: 1, flexDirection: "row"}}>
                     <TouchableOpacity 
                         onPress={() =>  this.props.onCloseAdd()} 
                     >
-                        <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>X</Text>
+                        <Text style={{fontSize: 20, paddingLeft: 20, paddingTop: 20, fontWeight: "bold"}}>X</Text>
                     </TouchableOpacity>
+                    <View style={{ 
+                        position: 'absolute', 
+                        width: Dimensions.get('window').width, 
+                        justifyContent: 'center', 
+                        alignItems: 'center'}}
+                    >
+                        <Text style={{ top: 20, fontWeight: "bold", fontSize: 20 }}>{this.strings.transfer}</Text>
+                    </View>
                 </View>
 
                 
                 <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
-                    <Text style={{paddingLeft: 15, fontWeight: "bold", fontSize: 23 }}>{this.strings.add_withdraw}</Text>
 
                     {this.state.currentBalance && this.state.providerBanks.length > 0 ? 
-                        <View style={{flex: 1, paddingHorizontal: 30}}>
-                            
+                        <View style={{flex: 1, paddingHorizontal: 20}}>
+                            <View style={{ justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={styles.currentValueText}>{this.strings.your_balance}</Text>
+                                <Text style={styles.currentValue}>{this.state.currentBalance}</Text>
+                            </View>
                             <View style={{marginTop: 20}}>
-                                <Text style={styles.formText}>Conta bancária</Text>
-                                <Picker
-                                    selectedValue={this.state.bankSelected}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        this.setState({bankSelected: itemValue})
-                                    }>
-                                    <Picker.Item value={0} label={this.strings.select} />
-                                    {this.state.providerBanks.length && this.state.providerBanks.map((bank, i) => {
-                                        return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
-                                    })}
-                                </Picker>
+                                <Text style={styles.formText}>{this.strings.bank_account}</Text>
+                                <View style={styles.form}>
+                                    <Picker
+                                        selectedValue={this.state.bankSelected}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.setState({bankSelected: itemValue})
+                                        }>
+                                        <Picker.Item itemStyle={{fontSize: 8}} value={0} label={this.strings.select} />
+                                        {this.state.providerBanks.length && this.state.providerBanks.map((bank, i) => {
+                                            return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
+                                        })}
+                                    </Picker>
+                                </View>
                             </View>
 
                             <View style={{marginTop: 20}}>
-                                <Text style={styles.formText}>Valor</Text>
-                                <TextInput
-                                    style={{height: 40,
-                                        fontSize: 16,
-                                        marginHorizontal: 7,
-                                        marginBottom: 15,
-                                        borderBottomWidth: 0.2}}
-                                    keyboardType='numeric'
-                                    placeholder={this.strings.write_value}
-                                    onChangeText={text => this.setState({ totalToAddWithdraw: text })}
-                                    value={this.state.totalToAddWithdraw ? String(this.state.totalToAddWithdraw) : null}
-                                />
+                                <Text style={styles.formValueTransfer}>{this.strings.transfer_value}</Text>
+                                <View style={styles.form}>
+                                    <TextInput
+                                        style={{fontSize: 16, paddingLeft: 10}}
+                                        keyboardType='numeric'
+                                        placeholder={this.strings.write_value}
+                                        onChangeText={text => this.setState({ totalToAddWithdraw: text })}
+                                        value={this.state.totalToAddWithdraw ? String(this.state.totalToAddWithdraw) : null}
+                                    />
+                                </View>
                             </View>
 
                             <View style={{marginTop: 20}}>
-                                <Text style={styles.text}>{this.strings.min_value}: {this.state.withdrawSettings.with_draw_min_limit}</Text>
-                                <Text style={styles.text}>{this.strings.max_value}: {this.state.withdrawSettings.with_draw_max_limit}</Text>
-                                <Text style={styles.text}>{this.strings.withdraw_tax}: {this.state.withdrawSettings.with_draw_tax}</Text>
-                                <Text style={styles.text}>{this.strings.your_balance}: {this.state.currentBalance}</Text>
+
+                                <View style={{flexDirection: "row"}}>
+                                    <View>
+                                        <Text style={styles.infoText}>{this.strings.min_value}</Text> 
+                                    </View>
+                                    <View style={{flex: 1 }}>
+                                        <View style={styles.hr}></View>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_min_limit}</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{flexDirection: "row"}}>
+                                    <View>
+                                        <Text style={styles.infoText}>{this.strings.max_value}</Text> 
+                                    </View>
+                                    <View style={{flex: 1 }}>
+                                        <View style={styles.hr}></View>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_max_limit}</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{flexDirection: "row"}}>
+                                    <View>
+                                        <Text style={styles.infoText}>{this.strings.withdraw_tax}</Text> 
+                                    </View>
+                                    <View style={{flex: 1 }}>
+                                        <View style={styles.hr}></View>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_tax}</Text>
+                                    </View>
+                                </View>
+                                
                             </View>
                         </View>
                     : null }
                         
                 </View>
-                <View style={{ flex: 1 }}>{/* Flex vertical of 1/10 */}
+                <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
                     <TouchableOpacity
-                        style={{ borderRadius: 20, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                        style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
                         onPress={() => {
                             this.confirmAddWithdraw();
                         }}
                     >
-                        <Text style={{color: this.props.textColor, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>
+                        <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -217,7 +261,8 @@ const styles = StyleSheet.create({
 
       text: {
         marginBottom: 15,
-        fontSize: 17
+        fontSize: 15,
+        paddingLeft: 10
       },
       textTitle: {
         marginBottom: 15,
@@ -226,8 +271,44 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
       },
       formText: {
-        fontSize: 17
-      }
+        fontSize: 14,
+        color: "#bfbfbf",
+        marginLeft: 5
+      },
+      currentValueText: {
+        fontSize: 17,
+        color: "#bfbfbf",
+        marginLeft: 5
+      },
+      currentValue: {
+        fontSize: 30,
+        color: "black",
+        marginLeft: 5,
+        fontWeight: "bold"
+      },
+      formValueTransfer: {
+        fontSize: 17,
+        color: "black",
+        marginLeft: 5,
+        fontWeight: "bold"
+      },
+      form: {
+        height: 40,
+        fontSize: 16,
+        marginHorizontal: 7,
+        marginBottom: 15,
+        borderBottomWidth: 0.2
+      },
+      hr: {
+        paddingVertical: 5, 
+        borderBottomWidth: 0.7,
+        borderBottomColor: '#C4C4C4'
+    },
+    infoText: {
+        marginBottom: 15, 
+        fontSize: 15, 
+        paddingHorizontal: 10
+    }
 
 });
 

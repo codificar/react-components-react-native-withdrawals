@@ -156,6 +156,20 @@ class ReportWithdraw extends Component {
         return text;
     }
 
+    checkWithdrawStatusColor(type) {
+        var text = "";
+        if(type == "requested") {
+            text = "gray";
+        } else if (type == "awaiting_return") {
+            text = "#e8cd00";
+        } else if (type == "concluded") {
+            text = "green";
+        } else if (type == "error") {
+            text = "red";
+        }
+        return text;
+    }
+
     render() {       
         return (
 
@@ -202,7 +216,7 @@ class ReportWithdraw extends Component {
                                                                     <Text style={{fontWeight: "bold", color: "black", fontSize: 15}}>{this.strings.transaction}</Text>
                                                                     <Text style={{color: "#C4C4C4"}}>{item.date}</Text>
                                                                     <Text style={{color: "#C4C4C4"}}>{this.strings.bank}: {item.bank} - {item.bankAccount}</Text>
-                                                                    <Text style={{color: "#C4C4C4"}}>{this.strings.status}: {this.checkWithdrawStatus(item.type)}</Text>
+                                                                    <Text style={{fontWeight: "bold", color: this.checkWithdrawStatusColor(item.type)}}>{this.strings.status}: {this.checkWithdrawStatus(item.type)}</Text>
                                                                 </View>
 
                                                                 {/* Flex horizontal of 2/7 */}
@@ -239,25 +253,15 @@ class ReportWithdraw extends Component {
                 )}
 
 
-                {/* Flex vertical of 1/10 */}
-                <TouchableOpacity 
-                    style={{
-                        flex: 1, 
-                        backgroundColor: this.props.buttonColor,  
-                        justifyContent: 'center', 
-                        alignItems: 'center'
-                    }}
-                    onPress={() =>  this.props.onGoToAddScreen()} 
-                >
+                <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
+                    <TouchableOpacity
+                        style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                        onPress={() =>  this.props.onGoToAddScreen()} 
+                    >
+                        <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add_withdraw}</Text>
+                    </TouchableOpacity>
+                </View>
 
-                    <Text style={{
-                            fontSize: 20, 
-                            padding: 20, 
-                            color: this.props.textColor, 
-                            fontWeight: 
-                            "bold"
-                        }}>{this.strings.add_withdraw}</Text>
-                </TouchableOpacity>
             </View>
                   
         )
