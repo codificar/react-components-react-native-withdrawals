@@ -47,6 +47,7 @@ class ReportWithdraw extends Component {
             },
             body: JSON.stringify({
                 provider_id: this.props.providerId,
+                id: this.props.providerId,
                 token: this.props.providerToken
             })
         })

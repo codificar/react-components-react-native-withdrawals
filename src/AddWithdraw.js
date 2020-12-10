@@ -74,6 +74,7 @@ class AddWithdraw extends Component {
             },
             body: JSON.stringify({
                 provider_id: this.props.providerId,
+                id: this.props.providerId,
                 token: this.props.providerToken
             })
         })
@@ -113,6 +114,7 @@ class AddWithdraw extends Component {
                 },
                 body: JSON.stringify({
                     provider_id: this.props.providerId,
+                    id: this.props.providerId,
                     token: this.props.providerToken,
                     withdraw_value: this.state.totalToAddWithdraw,
                     bank_account_id: this.state.bankSelected
