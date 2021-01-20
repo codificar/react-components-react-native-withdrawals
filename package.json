@@ -14,11 +14,7 @@
     },
 
     "author": "Codificar",
-    
-    "dependencies": {
-        "@react-native-community/picker": "^1.6.0"
-    },
-
+  
     "bugs": {
       "url": "https://github.com/codificar/react-native-withdrawals/issues"
     },
