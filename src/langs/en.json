@@ -23,5 +23,7 @@
   "select_value": "Please, select a value",
   "add_withdraw_success": "Withdraw added",
   "error_add_withdraw": "It is not possible add withdraw",
-  "transfer": "Transfer"
+  "transfer": "Transfer",
+  "confirm_withdraw": "Are you sure you want to withdraw ",
+  "valid_value": "Please enter a valid value"
 }

@@ -11,7 +11,8 @@ import {
     TextInput,
     BackHandler,
     Picker,
-    Dimensions
+    Dimensions,
+    Alert
 } from "react-native";
 
 //Moment date
@@ -92,49 +93,66 @@ class AddWithdraw extends Component {
         });
     }
 
-
-    confirmAddWithdraw() {
-
+    alertAddWithdraw() {
         //Check if bank is selected
         if(!this.state.bankSelected) {
             this.props.onWithdrawAdded(false, this.strings.select_bank, false); 
         }
-
         //Check if user select the value to add withdraw
         else if(!this.state.totalToAddWithdraw) {
             this.props.onWithdrawAdded(false, this.strings.select_value, false);
         } 
-        //If all is ok, call api
+        //format the value
         else {
-            fetch(this.props.urlAdd,{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    provider_id: this.props.providerId,
-                    id: this.props.providerId,
-                    token: this.props.providerToken,
-                    withdraw_value: this.state.totalToAddWithdraw,
-                    bank_account_id: this.state.bankSelected
-                })
-            })
-            .then((response) => response.json())
-            .then((json) => {
-                if(json.success) {
-                    //atualiza os relatorio de saques
-                    this.props.onWithdrawAdded(true, this.strings.add_withdraw_success, true);
-                } else {
-                    this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
-                }
-
-            })
-            .catch((error) => {
-                console.error(error);
-                this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
-            });
+            //Valor a adicionar formatado (convertido em float). Remove as virgulas e substitui por ponto.
+            var valueToAdd = parseFloat(this.state.totalToAddWithdraw.toString().replace(',', '.')).toFixed(2);
+            if(!valueToAdd || valueToAdd == "NaN") {
+                this.props.onWithdrawAdded(false, this.strings.valid_value, false);
+            } else {
+                Alert.alert(
+                    this.strings.do_withdraw,
+                    this.strings.confirm_withdraw + valueToAdd + "?",
+                    [
+                        { text: this.strings.cancel, style: "cancel" },
+                        { text: this.strings.add, onPress: () => this.confirmAddWithdraw(valueToAdd) }
+                    ],
+                    { cancelable: false }
+                );
+            }
         }
+    }
+
+
+    confirmAddWithdraw(valueToAdd) {
+
+        fetch(this.props.urlAdd,{
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                provider_id: this.props.providerId,
+                id: this.props.providerId,
+                token: this.props.providerToken,
+                withdraw_value: valueToAdd,
+                bank_account_id: this.state.bankSelected
+            })
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            if(json.success) {
+                //atualiza os relatorio de saques
+                this.props.onWithdrawAdded(true, this.strings.add_withdraw_success, true);
+            } else {
+                this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
+            }
+
+        })
+        .catch((error) => {
+            console.error(error);
+            this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
+        });
     }
     
     render() {       
@@ -242,7 +260,7 @@ class AddWithdraw extends Component {
                     <TouchableOpacity
                         style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
                         onPress={() => {
-                            this.confirmAddWithdraw();
+                            this.alertAddWithdraw();
                         }}
                     >
                         <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>

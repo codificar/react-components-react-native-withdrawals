@@ -23,5 +23,7 @@
   "select_value": "Por favor, selecione o valor a ser sacado",
   "add_withdraw_success": "Saque realizado com sucesso",
   "error_add_withdraw": "Não foi possível realizar o saque",
-  "transfer": "Transferência"
+  "transfer": "Transferência",
+  "confirm_withdraw": "Tem certeza que deseja realizar o saque no valor de ",
+  "valid_value": "Digite um valor válido"
 }
