@@ -153,6 +153,8 @@ class ReportWithdraw extends Component {
             text = this.strings.concluded;
         } else if (type == "error") {
             text = this.strings.error;
+        } else if (type == "rejected") {
+            text = this.strings.rejected;
         }
         return text;
     }
@@ -167,6 +169,8 @@ class ReportWithdraw extends Component {
             text = "green";
         } else if (type == "error") {
             text = "red";
+        } else if (type == "rejected") {
+            text = "blue";
         }
         return text;
     }
