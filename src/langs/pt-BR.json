@@ -25,5 +25,6 @@
   "error_add_withdraw": "Não foi possível realizar o saque",
   "transfer": "Transferência",
   "confirm_withdraw": "Tem certeza que deseja realizar o saque no valor de ",
-  "valid_value": "Digite um valor válido"
+  "valid_value": "Digite um valor válido",
+  "rejected": "Rejeitado"
 }
