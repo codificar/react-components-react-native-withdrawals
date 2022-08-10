@@ -82,6 +82,7 @@ class WithdrawalsReport extends Component {
                         textColor={this.props.textColor ? this.props.textColor : "white"}
                         isBankAccount={this.props.isBankAccount ? this.props.isBankAccount : false}
                         navigateBankScreen={this.props.navigateBankScreen ? this.props.navigateBankScreen : null}
+                        returnScreen={this.props.returnScreen ? this.props.returnScreen : null}
                     />
                 )}
 
