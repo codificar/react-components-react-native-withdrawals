@@ -10,10 +10,10 @@ import {
     Modal,
     TextInput,
     BackHandler,
-    Picker,
     Dimensions,
     Alert
 } from "react-native";
+import {Picker} from '@react-native-picker/picker';
 
 //Moment date
 import moment from "moment";
@@ -175,7 +175,9 @@ class AddWithdraw extends Component {
                     <TouchableOpacity
                         onPress={() =>  this.props.onCloseAdd()}
                     >
-                        <Text style={{fontSize: 20, paddingLeft: 20, paddingTop: 20, fontWeight: "bold"}}>X</Text>
+                        <Text style={{fontSize: 20, paddingLeft: 20, paddingTop: 20, fontWeight: "bold"}}>
+                            X
+                        </Text>
                     </TouchableOpacity>
                     <View style={{
                         position: 'absolute',
@@ -183,7 +185,9 @@ class AddWithdraw extends Component {
                         justifyContent: 'center',
                         alignItems: 'center'}}
                     >
-                        <Text style={{ top: 20, fontWeight: "bold", fontSize: 20 }}>{this.strings.transfer}</Text>
+                        <Text style={{ top: 20, fontWeight: "bold", fontSize: 20 }}>
+                            {this.strings.transfer}
+                        </Text>
                     </View>
                 </View>
 
@@ -197,17 +201,19 @@ class AddWithdraw extends Component {
                                 <Text style={styles.currentValue}>{this.state.currentBalance}</Text>
                             </View>
                             <View style={{marginTop: 20}}>
-                                <Text style={styles.formText}>{this.strings.bank_account}</Text>
+                                <Text style={styles.formText}>
+                                    {this.strings.bank_account}
+                                </Text>
                                 <View style={styles.form}>
                                     <Picker
                                         selectedValue={this.state.bankSelected}
                                         onValueChange={(itemValue, itemIndex) =>
                                             this.setState({bankSelected: itemValue})
                                         }>
-                                        <Picker.Item itemStyle={{fontSize: 8}} value={0} label={this.strings.select} />
-                                        {this.state.providerBanks.length && this.state.providerBanks.map((bank, i) => {
+                                        <Picker.Item key={0} itemStyle={{fontSize: 8}} value={0} label={this.strings.select} />
+                                        {this.state.providerBanks && this.state.providerBanks.length > 0 ? this.state.providerBanks.map((bank, i) => {
                                             return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
-                                        })}
+                                        }): null}
                                     </Picker>
                                 </View>
                             </View>
@@ -229,37 +235,49 @@ class AddWithdraw extends Component {
 
                                 <View style={{flexDirection: "row"}}>
                                     <View>
-                                        <Text style={styles.infoText}>{this.strings.min_value}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.strings.min_value ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={{flex: 1 }}>
                                         <View style={styles.hr}></View>
                                     </View>
                                     <View>
-                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_min_limit}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.state.withdrawSettings.with_draw_min_limit ?? ''}
+                                        </Text>
                                     </View>
                                 </View>
 
                                 <View style={{flexDirection: "row"}}>
                                     <View>
-                                        <Text style={styles.infoText}>{this.strings.max_value}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.strings.max_value ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={{flex: 1 }}>
                                         <View style={styles.hr}></View>
                                     </View>
                                     <View>
-                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_max_limit}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.state.withdrawSettings.with_draw_max_limit ?? ''}
+                                        </Text>
                                     </View>
                                 </View>
 
                                 <View style={{flexDirection: "row"}}>
                                     <View>
-                                        <Text style={styles.infoText}>{this.strings.withdraw_tax}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.strings.withdraw_tax ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={{flex: 1 }}>
                                         <View style={styles.hr}></View>
                                     </View>
                                     <View>
-                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_tax}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.state.withdrawSettings.with_draw_tax ?? '-'}
+                                        </Text>
                                     </View>
                                 </View>
 
