@@ -16,8 +16,6 @@ import {
 } from "react-native";
 import {Picker} from '@react-native-picker/picker';
 
-import {Picker} from '@react-native-picker/picker';
-
 //Moment date
 import moment from "moment";
 
@@ -36,7 +34,8 @@ class AddWithdraw extends Component {
             },
             totalToAddWithdraw: "",
             bankSelected: 0,
-            providerBanks: []
+            providerBanks: [],
+            disableDoubleClick: false
         }
 
 
@@ -97,13 +96,16 @@ class AddWithdraw extends Component {
     }
 
     alertAddWithdraw() {
+        this.setState({disableDoubleClick: true})
         //Check if bank is selected
         if(!this.state.bankSelected) {
             this.props.onWithdrawAdded(false, this.strings.select_bank, false);
+            this.setState({disableDoubleClick: false})
         }
         //Check if user select the value to add withdraw
         else if(!this.state.totalToAddWithdraw) {
             this.props.onWithdrawAdded(false, this.strings.select_value, false);
+            this.setState({disableDoubleClick: false})
         }
         //format the value
         else {
@@ -116,7 +118,7 @@ class AddWithdraw extends Component {
                     this.strings.do_withdraw,
                     this.strings.confirm_withdraw + valueToAdd + "?",
                     [
-                        { text: this.strings.cancel, style: "cancel" },
+                        { text: this.strings.cancel, onPress: () => this.setState({disableDoubleClick: false}), style: "cancel" },
                         { text: this.strings.add, onPress: () => this.confirmAddWithdraw(valueToAdd) }
                     ],
                     { cancelable: false }
@@ -167,6 +169,8 @@ class AddWithdraw extends Component {
         .catch((error) => {
             console.error(error);
             this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
+        }).finally(() => {
+          this.setState({disableDoubleClick: false})
         });
     }
 
@@ -290,6 +294,7 @@ class AddWithdraw extends Component {
                 <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
                     <TouchableOpacity
                         style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                        disabled={this.state.disableDoubleClick}
                         onPress={() => {
                             this.alertAddWithdraw();
                         }}
