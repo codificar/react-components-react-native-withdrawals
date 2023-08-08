@@ -16,11 +16,6 @@ import {
 } from "react-native";
 import {Picker} from '@react-native-picker/picker';
 
-import {Picker} from '@react-native-picker/picker';
-
-//Moment date
-import moment from "moment";
-
 
 class AddWithdraw extends Component {
 
