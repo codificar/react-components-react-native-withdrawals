@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { 
-    View, 
-    TouchableOpacity, 
-    Text, 
-    FlatList, 
-    StyleSheet, 
+import {
+    View,
+    TouchableOpacity,
+    Text,
+    FlatList,
+    StyleSheet,
     Image
 } from "react-native";
 
@@ -25,7 +25,7 @@ class ReportWithdraw extends Component {
         if(this.props.lang) {
             if(this.props.lang == "pt-BR") {
                 this.strings = require('./langs/pt-BR.json');
-            } 
+            }
             // if is english
             else if(this.props.lang.indexOf("en") != -1) {
                 this.strings = require('./langs/en.json');
@@ -34,27 +34,39 @@ class ReportWithdraw extends Component {
     }
 
     componentDidMount() {
-        //Get the summary report
-        this.getWithdrawalsReport();
+      //Get the summary report
+      this.getWithdrawalsReport();
     }
 
     getWithdrawalsReport() {
+
+        var data =  {
+          provider_id: this.props.providerId,
+          id: this.props.providerId,
+          token: this.props.providerToken
+        };
+
+        if(this.props.type && this.props.type == "user") {
+          data =  {
+            user_id: this.props.providerId,
+            id: this.props.providerId,
+            token: this.props.providerToken
+          };
+        }
+
         fetch(this.props.urlReport,{
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                provider_id: this.props.providerId,
-                id: this.props.providerId,
-                token: this.props.providerToken
-            })
+            body: JSON.stringify(data)
         })
         .then((response) => response.json())
         .then((json) => {
-
-            this.convertWithdrawalsFormat(json.withdrawals_report);
+            if(json.success && json.withdrawals_report) {
+              this.convertWithdrawalsFormat(json.withdrawals_report);
+            }
         })
         .catch((error) => {
             console.error(error);
@@ -62,8 +74,8 @@ class ReportWithdraw extends Component {
     }
 
     /**
-     * function to convert the format   
-     * 
+     * function to convert the format
+     *
      * EXAMPLE THE PROPS BEFORE CONVERT
         [
             {
@@ -115,11 +127,11 @@ class ReportWithdraw extends Component {
             var dataFormatted = {
                 bank: withdrawReport[i].bank,
                 formattedValue: withdrawReport[i].formattedValue,
-                date: moment(withdrawReport[i].date, "YYYY-MM-DD HH:mm:ss").format("ddd, D MMM"),
+                date: moment(withdrawReport[i].date, "YYYY-MM-DD HH:mm:ss").format("ddd, DD/MM/YYYY HH:mm"),
                 bankAccount: withdrawReport[i].bankAccount,
                 type: withdrawReport[i].type,
             }
-            
+
             //Check if not exists this year/month in array
             if(arrayPosition === -1) {
                 //Add the year-month in yearsMonths array that contain all unique years-months
@@ -135,7 +147,7 @@ class ReportWithdraw extends Component {
             else {
                 //add the withdrawal in this year-month
                 newArray[arrayPosition].withdrawals.push(dataFormatted);
-                
+
             }
         }
 		this.setState({
@@ -162,7 +174,7 @@ class ReportWithdraw extends Component {
     checkWithdrawStatusColor(type) {
         var text = "";
         if(type == "requested") {
-            text = "gray";
+            text = "blue";
         } else if (type == "awaiting_return") {
             text = "#e8cd00";
         } else if (type == "concluded") {
@@ -170,19 +182,19 @@ class ReportWithdraw extends Component {
         } else if (type == "error") {
             text = "red";
         } else if (type == "rejected") {
-            text = "blue";
+            text = "orange";
         }
         return text;
     }
 
-    render() {       
+    render() {
         return (
 
             <View style={{flex: 1}}>
                 {/* Flex vertical of 1/10 */}
                 <View style={{flex: 1, backgroundColor: "white"}}>
-                    <TouchableOpacity 
-                        onPress={() =>  this.props.onCloseReport()} 
+                    <TouchableOpacity
+                        onPress={() =>  this.props.onCloseReport()}
                     >
                         <Text style={{fontSize: 20, padding: 20, fontWeight: "bold"}}>X</Text>
                     </TouchableOpacity>
@@ -194,12 +206,12 @@ class ReportWithdraw extends Component {
                             data={this.state.withdrawals}
                             keyExtractor={(x, i) => i.toString()}
                             renderItem={({ item, index }) => (
-                                
+
                                 <View>
                                     {item && item.title && item.withdrawals.length > 0 ? (
                                         <View>
                                             <Text style={{padding: 15, fontWeight: "bold", fontSize: 23}}>{item.title}</Text>
-                                            
+
                                             <FlatList
                                                 data={item.withdrawals}
                                                 keyExtractor={(x, i) => i.toString()}
@@ -211,7 +223,7 @@ class ReportWithdraw extends Component {
                                                         <View style={{ flex: 1, backgroundColor:"white", justifyContent: 'center', alignItems: 'center' }}>
                                                             <Image style={{flex: 1, width: 30, height: 30, resizeMode: 'contain'}} source={require('./img/bank-profile.png')} />
                                                         </View>
-                                                        
+
                                                         {/* Flex horizontal of 7/8 */}
                                                         <View style={{flex: 7}}>
                                                             {/* Flex horizontal */}
@@ -231,19 +243,19 @@ class ReportWithdraw extends Component {
                                                             </View>
                                                             <View style={styles.hr}></View>
                                                         </View>
-                                                        
+
                                                     </View>
                                                 )}
                                             />
                                         </View>
-                                    ) : ( 
-                                        null 
+                                    ) : (
+                                        null
                                     )}
                                 </View>
                             )}
                         />
                     </View>
-                ) : ( 
+                ) : (
                     <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
                         <View style={{flex: 1, alignItems: "center", paddingTop: 100}}>
                             <Image
@@ -257,25 +269,37 @@ class ReportWithdraw extends Component {
                     </View>
                 )}
 
+                {/** Verify if is user bank account */}
+                { !this.props.isBankAccount ? (
 
-                <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
-                    <TouchableOpacity
-                        style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
-                        onPress={() =>  this.props.onGoToAddScreen()} 
-                    >
-                        <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add_withdraw}</Text>
-                    </TouchableOpacity>
-                </View>
+                  <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
+                      <TouchableOpacity
+                          style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                          onPress={() =>  this.props.navigateBankScreen && this.props.navigateBankScreen()}
+                      >
+                          <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add_bank_account}</Text>
+                      </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
+                      <TouchableOpacity
+                          style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                          onPress={() =>  this.props.onGoToAddScreen()}
+                      >
+                          <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add_withdraw}</Text>
+                      </TouchableOpacity>
+                  </View>
+                )}
 
             </View>
-                  
+
         )
     }
 }
 
 const styles = StyleSheet.create({
     hr: {
-        paddingVertical: 5, 
+        paddingVertical: 5,
         borderBottomWidth: 0.5,
         borderBottomColor: '#C4C4C4'
     },

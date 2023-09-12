@@ -26,5 +26,6 @@
   "transfer": "Transfer",
   "confirm_withdraw": "Are you sure you want to withdraw ",
   "valid_value": "Please enter a valid value",
-  "rejected": "Rejected"
+  "rejected": "Rejected",
+  "add_bank_account": "Add Bank Account"
 }
