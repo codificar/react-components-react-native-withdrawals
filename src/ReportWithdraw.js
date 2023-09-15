@@ -25,7 +25,10 @@ class ReportWithdraw extends Component {
         if(this.props.lang) {
             if(this.props.lang == "pt-BR") {
                 this.strings = require('./langs/pt-BR.json');
-            } 
+            }
+            else if(this.props.lang.indexOf("es-PY") != -1) {
+                this.strings = require('./langs/es-PY.json');
+            }
             // if is english
             else if(this.props.lang.indexOf("en") != -1) {
                 this.strings = require('./langs/en.json');
