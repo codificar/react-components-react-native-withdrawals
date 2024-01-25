@@ -10,10 +10,12 @@ import {
     Modal,
     TextInput,
     BackHandler,
-    Picker,
     Dimensions,
-    Alert
+    Alert,
+    Platform
 } from "react-native";
+
+import {Picker} from '@react-native-picker/picker';
 
 //Moment date
 import moment from "moment";
@@ -157,7 +159,7 @@ class AddWithdraw extends Component {
     
     render() {       
         return (
-            <View style={{flex: 1}}>
+            <View style={Platform.OS === 'ios' ? {flex: 1, paddingTop: 16,} : {flex: 1}}>
                 {/* Flex vertical of 1/10 */}
                 <View style={{flex: 1, flexDirection: "row"}}>
                     <TouchableOpacity 
@@ -186,7 +188,7 @@ class AddWithdraw extends Component {
                             </View>
                             <View style={{marginTop: 20}}>
                                 <Text style={styles.formText}>{this.strings.bank_account}</Text>
-                                <View style={styles.form}>
+                                <View style={Platform.OS === 'android' ? styles.form : {}}>
                                     <Picker
                                         selectedValue={this.state.bankSelected}
                                         onValueChange={(itemValue, itemIndex) =>
