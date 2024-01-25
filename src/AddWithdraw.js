@@ -44,9 +44,9 @@ class AddWithdraw extends Component {
         if(this.props.lang) {
             if(this.props.lang == "pt-BR") {
                 this.strings = require('./langs/pt-BR.json');
-            }
-            // if is english
-            else if(this.props.lang.indexOf("en") != -1) {
+            }else if(this.props.lang.includes('es')) {
+                this.strings = require('./langs/es-PY.json');
+            }else if(this.props.lang.indexOf("en") != -1) {
                 this.strings = require('./langs/en.json');
             }
         }
