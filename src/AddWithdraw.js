@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { 
-    View, 
-    TouchableOpacity, 
-    Text, 
-    FlatList, 
-    StyleSheet, 
+import {
+    View,
+    TouchableOpacity,
+    Text,
+    FlatList,
+    StyleSheet,
     Image,
     Button,
     Modal,
@@ -14,7 +14,6 @@ import {
     Alert,
     Platform
 } from "react-native";
-
 import {Picker} from '@react-native-picker/picker';
 
 //Moment date
@@ -35,7 +34,8 @@ class AddWithdraw extends Component {
             },
             totalToAddWithdraw: "",
             bankSelected: 0,
-            providerBanks: []
+            providerBanks: [],
+            disableDoubleClick: false
         }
 
 
@@ -44,7 +44,7 @@ class AddWithdraw extends Component {
         if(this.props.lang) {
             if(this.props.lang == "pt-BR") {
                 this.strings = require('./langs/pt-BR.json');
-            } 
+            }
             // if is english
             else if(this.props.lang.indexOf("en") != -1) {
                 this.strings = require('./langs/en.json');
@@ -88,7 +88,7 @@ class AddWithdraw extends Component {
                 withdrawSettings: json.withdraw_settings,
                 providerBanks: json.provider_banks
             });
-            
+
         })
         .catch((error) => {
             console.error(error);
@@ -96,14 +96,17 @@ class AddWithdraw extends Component {
     }
 
     alertAddWithdraw() {
+        this.setState({disableDoubleClick: true})
         //Check if bank is selected
         if(!this.state.bankSelected) {
-            this.props.onWithdrawAdded(false, this.strings.select_bank, false); 
+            this.props.onWithdrawAdded(false, this.strings.select_bank, false);
+            this.setState({disableDoubleClick: false})
         }
         //Check if user select the value to add withdraw
         else if(!this.state.totalToAddWithdraw) {
             this.props.onWithdrawAdded(false, this.strings.select_value, false);
-        } 
+            this.setState({disableDoubleClick: false})
+        }
         //format the value
         else {
             //Valor a adicionar formatado (convertido em float). Remove as virgulas e substitui por ponto.
@@ -115,7 +118,7 @@ class AddWithdraw extends Component {
                     this.strings.do_withdraw,
                     this.strings.confirm_withdraw + valueToAdd + "?",
                     [
-                        { text: this.strings.cancel, style: "cancel" },
+                        { text: this.strings.cancel, onPress: () => this.setState({disableDoubleClick: false}), style: "cancel" },
                         { text: this.strings.add, onPress: () => this.confirmAddWithdraw(valueToAdd) }
                     ],
                     { cancelable: false }
@@ -127,19 +130,31 @@ class AddWithdraw extends Component {
 
     confirmAddWithdraw(valueToAdd) {
 
+        var data =  {
+            provider_id: this.props.providerId,
+            id: this.props.providerId,
+            token: this.props.providerToken,
+            withdraw_value: valueToAdd,
+            bank_account_id: this.state.bankSelected
+        };
+
+        if(this.props.type && this.props.type == "user") {
+          data =  {
+            user_id: this.props.providerId,
+            id: this.props.providerId,
+            token: this.props.providerToken,
+            withdraw_value: valueToAdd,
+            bank_account_id: this.state.bankSelected
+          };
+        }
+
         fetch(this.props.urlAdd,{
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                provider_id: this.props.providerId,
-                id: this.props.providerId,
-                token: this.props.providerToken,
-                withdraw_value: valueToAdd,
-                bank_account_id: this.state.bankSelected
-            })
+            body: JSON.stringify(data)
         })
         .then((response) => response.json())
         .then((json) => {
@@ -154,33 +169,39 @@ class AddWithdraw extends Component {
         .catch((error) => {
             console.error(error);
             this.props.onWithdrawAdded(false, this.strings.error_add_withdraw, false);
+        }).finally(() => {
+          this.setState({disableDoubleClick: false})
         });
     }
-    
-    render() {       
+
+    render() {
         return (
             <View style={Platform.OS === 'ios' ? {flex: 1, paddingTop: 16,} : {flex: 1}}>
                 {/* Flex vertical of 1/10 */}
                 <View style={{flex: 1, flexDirection: "row"}}>
-                    <TouchableOpacity 
-                        onPress={() =>  this.props.onCloseAdd()} 
+                    <TouchableOpacity
+                        onPress={() =>  this.props.onCloseAdd()}
                     >
-                        <Text style={{fontSize: 20, paddingLeft: 20, paddingTop: 20, fontWeight: "bold"}}>X</Text>
+                        <Text style={{fontSize: 20, paddingLeft: 20, paddingTop: 20, fontWeight: "bold"}}>
+                            X
+                        </Text>
                     </TouchableOpacity>
-                    <View style={{ 
-                        position: 'absolute', 
-                        width: Dimensions.get('window').width, 
-                        justifyContent: 'center', 
+                    <View style={{
+                        position: 'absolute',
+                        width: Dimensions.get('window').width,
+                        justifyContent: 'center',
                         alignItems: 'center'}}
                     >
-                        <Text style={{ top: 20, fontWeight: "bold", fontSize: 20 }}>{this.strings.transfer}</Text>
+                        <Text style={{ top: 20, fontWeight: "bold", fontSize: 20 }}>
+                            {this.strings.transfer}
+                        </Text>
                     </View>
                 </View>
 
-                
+
                 <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
 
-                    {this.state.currentBalance && this.state.providerBanks.length > 0 ? 
+                    {this.state.currentBalance && this.state.providerBanks.length > 0 ?
                         <View style={{flex: 1, paddingHorizontal: 20}}>
                             <View style={{ justifyContent: 'center', alignItems: 'center'}}>
                                 <Text style={styles.currentValueText}>{this.strings.your_balance}</Text>
@@ -194,10 +215,10 @@ class AddWithdraw extends Component {
                                         onValueChange={(itemValue, itemIndex) =>
                                             this.setState({bankSelected: itemValue})
                                         }>
-                                        <Picker.Item itemStyle={{fontSize: 8}} value={0} label={this.strings.select} />
-                                        {this.state.providerBanks.length && this.state.providerBanks.map((bank, i) => {
+                                        <Picker.Item key={0} itemStyle={{fontSize: 8}} value={0} label={this.strings.select} />
+                                        {this.state.providerBanks && this.state.providerBanks.length > 0 ? this.state.providerBanks.map((bank, i) => {
                                             return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
-                                        })}
+                                        }): null}
                                     </Picker>
                                 </View>
                             </View>
@@ -219,48 +240,61 @@ class AddWithdraw extends Component {
 
                                 <View style={{flexDirection: "row"}}>
                                     <View>
-                                        <Text style={styles.infoText}>{this.strings.min_value}</Text> 
+                                        <Text style={styles.infoText}>
+                                            {this.strings.min_value ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={{flex: 1 }}>
                                         <View style={styles.hr}></View>
                                     </View>
                                     <View>
-                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_min_limit}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.state.withdrawSettings.with_draw_min_limit ?? ''}
+                                        </Text>
                                     </View>
                                 </View>
 
                                 <View style={{flexDirection: "row"}}>
                                     <View>
-                                        <Text style={styles.infoText}>{this.strings.max_value}</Text> 
+                                        <Text style={styles.infoText}>
+                                            {this.strings.max_value ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={{flex: 1 }}>
                                         <View style={styles.hr}></View>
                                     </View>
                                     <View>
-                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_max_limit}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.state.withdrawSettings.with_draw_max_limit ?? ''}
+                                        </Text>
                                     </View>
                                 </View>
 
                                 <View style={{flexDirection: "row"}}>
                                     <View>
-                                        <Text style={styles.infoText}>{this.strings.withdraw_tax}</Text> 
+                                        <Text style={styles.infoText}>
+                                            {this.strings.withdraw_tax ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={{flex: 1 }}>
                                         <View style={styles.hr}></View>
                                     </View>
                                     <View>
-                                        <Text style={styles.infoText}>{this.state.withdrawSettings.with_draw_tax}</Text>
+                                        <Text style={styles.infoText}>
+                                            {this.state.withdrawSettings.with_draw_tax ?? '-'}
+                                        </Text>
                                     </View>
                                 </View>
-                                
+
                             </View>
                         </View>
                     : null }
-                        
+
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
                     <TouchableOpacity
                         style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                        disabled={this.state.disableDoubleClick}
                         onPress={() => {
                             this.alertAddWithdraw();
                         }}
@@ -322,13 +356,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.2
       },
       hr: {
-        paddingVertical: 5, 
+        paddingVertical: 5,
         borderBottomWidth: 0.7,
         borderBottomColor: '#C4C4C4'
     },
     infoText: {
-        marginBottom: 15, 
-        fontSize: 15, 
+        marginBottom: 15,
+        fontSize: 15,
         paddingHorizontal: 10
     }
 
