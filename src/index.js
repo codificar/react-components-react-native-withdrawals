@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { 
-    View, 
+import {
+    View,
     StyleSheet
 
 } from "react-native";
@@ -19,7 +19,7 @@ class WithdrawalsReport extends Component {
     }
 
     componentDidMount() {
-        
+
     }
 
     /**
@@ -35,7 +35,7 @@ class WithdrawalsReport extends Component {
     onCloseAdd() {
         this.setState({ isInAddScreen: false });
     }
-    
+
     /**
      * When withdraw was added, send event for project. The project can do a alert message.
      */
@@ -53,11 +53,12 @@ class WithdrawalsReport extends Component {
         this.setState({ isInAddScreen: true });
     }
 
-    render() {       
+    render() {
         return (
             <View style={styles.body}>
                 {this.state.isInAddScreen ? (
                     <AddWithdraw
+                        type={this.props.type ? this.props.type : "provider"}
                         providerId={this.props.providerId}
                         providerToken={this.props.providerToken}
                         lang={this.props.lang}
@@ -70,6 +71,7 @@ class WithdrawalsReport extends Component {
                     />
                 ) : (
                     <ReportWithdraw
+                        type={this.props.type ? this.props.type : "provider"}
                         providerId={this.props.providerId}
                         providerToken={this.props.providerToken}
                         lang={this.props.lang}
@@ -78,9 +80,12 @@ class WithdrawalsReport extends Component {
                         onGoToAddScreen={this.onGoToAddScreen.bind(this)}
                         buttonColor={this.props.buttonColor ? this.props.buttonColor : "#647a63"}
                         textColor={this.props.textColor ? this.props.textColor : "white"}
+                        isBankAccount={this.props.isBankAccount ? this.props.isBankAccount : false}
+                        navigateBankScreen={this.props.navigateBankScreen ? this.props.navigateBankScreen : null}
+                        returnScreen={this.props.returnScreen ? this.props.returnScreen : null}
                     />
                 )}
-                  
+
             </View>
         )
     }
@@ -88,7 +93,7 @@ class WithdrawalsReport extends Component {
 
 const styles = StyleSheet.create({
     body: {
-        flex: 1, 
+        flex: 1,
         backgroundColor: 'white'
     }
 });
