@@ -127,7 +127,7 @@ class ReportWithdraw extends Component {
             var dataFormatted = {
                 bank: withdrawReport[i].bank,
                 formattedValue: withdrawReport[i].formattedValue,
-                date: moment(withdrawReport[i].date, "YYYY-MM-DD HH:mm:ss").format("ddd, D MMM"),
+                date: moment(withdrawReport[i].date, "YYYY-MM-DD HH:mm:ss").format("ddd, DD/MM/YYYY HH:mm"),
                 bankAccount: withdrawReport[i].bankAccount,
                 type: withdrawReport[i].type,
             }
@@ -174,7 +174,7 @@ class ReportWithdraw extends Component {
     checkWithdrawStatusColor(type) {
         var text = "";
         if(type == "requested") {
-            text = "gray";
+            text = "blue";
         } else if (type == "awaiting_return") {
             text = "#e8cd00";
         } else if (type == "concluded") {
@@ -182,7 +182,7 @@ class ReportWithdraw extends Component {
         } else if (type == "error") {
             text = "red";
         } else if (type == "rejected") {
-            text = "blue";
+            text = "orange";
         }
         return text;
     }
