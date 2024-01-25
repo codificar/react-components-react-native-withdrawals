@@ -273,12 +273,12 @@ class ReportWithdraw extends Component {
                 { !this.props.isBankAccount ? (
 
                   <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
-                      <TouchableOpacity
+                      {this.props.navigateBankScreen && <TouchableOpacity
                           style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
                           onPress={() =>  this.props.navigateBankScreen && this.props.navigateBankScreen()}
                       >
                           <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add_bank_account}</Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity>}
                   </View>
                 ) : (
                   <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
