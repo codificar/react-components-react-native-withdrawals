@@ -26,5 +26,6 @@
   "transfer": "Transferência",
   "confirm_withdraw": "Tem certeza que deseja realizar o saque no valor de ",
   "valid_value": "Digite um valor válido",
-  "rejected": "Rejeitado"
+  "rejected": "Rejeitado",
+  "add_bank_account": "Adicionar conta bancária"
 }
