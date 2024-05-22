@@ -20,6 +20,7 @@ import {
 import Colors from '../../../App/Themes/Colors';
 import {Picker} from '@react-native-picker/picker';
 import { Header } from '@react-navigation/stack';
+import { useHeaderHeight } from 'react-navigation-stack';
 
 
 //Moment date
@@ -184,15 +185,12 @@ class AddWithdraw extends Component {
         return (
             <View style={Platform.OS === 'ios' ? {flex: 1, paddingTop: 45,} : {flex: 1}}>
 
-                <ScrollView style={styles.parentContainer} keyboardShouldPersistTaps="handled">
-					<KeyboardAvoidingView
-						//style={styles.container}
-						behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-                        style={{ flex: 1 }}
-                        keyboardVerticalOffset={100}
-    
-						enabled
-					>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS==='ios' ? 'padding' : null}
+                    style={{ flex: 1 }}
+                    enabled
+                >
+                    <ScrollView style={styles.parentContainer} keyboardShouldPersistTaps="handled">
                         <View style={{flex: 1, flexDirection: "row"}}>
                             <TouchableOpacity
                                 onPress={() =>  this.props.onCloseAdd()}
@@ -317,8 +315,8 @@ class AddWithdraw extends Component {
                                 <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>
                             </TouchableOpacity>
                         </View>
-                    </KeyboardAvoidingView>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         )
     }
