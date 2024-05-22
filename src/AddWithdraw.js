@@ -12,9 +12,15 @@ import {
     BackHandler,
     Dimensions,
     Alert,
-    Platform
+    Platform,
+    ScrollView,
+    KeyboardAvoidingView,
+    StatusBar
 } from "react-native";
+import Colors from '../../../App/Themes/Colors';
 import {Picker} from '@react-native-picker/picker';
+import { Header } from '@react-navigation/stack';
+
 
 //Moment date
 import moment from "moment";
@@ -176,132 +182,143 @@ class AddWithdraw extends Component {
 
     render() {
         return (
-            <View style={Platform.OS === 'ios' ? {flex: 1, paddingTop: 16,} : {flex: 1}}>
-                {/* Flex vertical of 1/10 */}
-                <View style={{flex: 1, flexDirection: "row"}}>
-                    <TouchableOpacity
-                        onPress={() =>  this.props.onCloseAdd()}
-                    >
-                        <Text style={{fontSize: 20, paddingLeft: 20, paddingTop: 20, fontWeight: "bold"}}>
-                            X
-                        </Text>
-                    </TouchableOpacity>
-                    <View style={{
-                        position: 'absolute',
-                        width: Dimensions.get('window').width,
-                        justifyContent: 'center',
-                        alignItems: 'center'}}
-                    >
-                        <Text style={{ top: 20, fontWeight: "bold", fontSize: 20 }}>
-                            {this.strings.transfer}
-                        </Text>
-                    </View>
-                </View>
+            <View style={Platform.OS === 'ios' ? {flex: 1, paddingTop: 45,} : {flex: 1}}>
 
-
-                <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
-
-                    {this.state.currentBalance && this.state.providerBanks.length > 0 ?
-                        <View style={{flex: 1, paddingHorizontal: 20}}>
-                            <View style={{ justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={styles.currentValueText}>{this.strings.your_balance}</Text>
-                                <Text style={styles.currentValue}>{this.state.currentBalance}</Text>
-                            </View>
-                            <View style={{marginTop: 20}}>
-                                <Text style={styles.formText}>{this.strings.bank_account}</Text>
-                                <View style={Platform.OS === 'android' ? styles.form : {}}>
-                                    <Picker
-                                        selectedValue={this.state.bankSelected}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            this.setState({bankSelected: itemValue})
-                                        }>
-                                        <Picker.Item key={0} itemStyle={{fontSize: 8}} value={0} label={this.strings.select} />
-                                        {this.state.providerBanks && this.state.providerBanks.length > 0 ? this.state.providerBanks.map((bank, i) => {
-                                            return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
-                                        }): null}
-                                    </Picker>
-                                </View>
-                            </View>
-
-                            <View style={{marginTop: 20}}>
-                                <Text style={styles.formValueTransfer}>{this.strings.transfer_value}</Text>
-                                <View style={styles.form}>
-                                    <TextInput
-                                        style={{fontSize: 16, paddingLeft: 10}}
-                                        keyboardType='numeric'
-                                        placeholder={this.strings.write_value}
-                                        onChangeText={text => this.setState({ totalToAddWithdraw: text })}
-                                        value={this.state.totalToAddWithdraw ? String(this.state.totalToAddWithdraw) : null}
-                                    />
-                                </View>
-                            </View>
-
-                            <View style={{marginTop: 20}}>
-
-                                <View style={{flexDirection: "row"}}>
-                                    <View>
-                                        <Text style={styles.infoText}>
-                                            {this.strings.min_value ?? ''}
-                                        </Text>
-                                    </View>
-                                    <View style={{flex: 1 }}>
-                                        <View style={styles.hr}></View>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.infoText}>
-                                            {this.state.withdrawSettings.with_draw_min_limit ?? ''}
-                                        </Text>
-                                    </View>
-                                </View>
-
-                                <View style={{flexDirection: "row"}}>
-                                    <View>
-                                        <Text style={styles.infoText}>
-                                            {this.strings.max_value ?? ''}
-                                        </Text>
-                                    </View>
-                                    <View style={{flex: 1 }}>
-                                        <View style={styles.hr}></View>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.infoText}>
-                                            {this.state.withdrawSettings.with_draw_max_limit ?? ''}
-                                        </Text>
-                                    </View>
-                                </View>
-
-                                <View style={{flexDirection: "row"}}>
-                                    <View>
-                                        <Text style={styles.infoText}>
-                                            {this.strings.withdraw_tax ?? ''}
-                                        </Text>
-                                    </View>
-                                    <View style={{flex: 1 }}>
-                                        <View style={styles.hr}></View>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.infoText}>
-                                            {this.state.withdrawSettings.with_draw_tax ?? '-'}
-                                        </Text>
-                                    </View>
-                                </View>
-
+                <ScrollView style={styles.parentContainer} keyboardShouldPersistTaps="handled">
+					<KeyboardAvoidingView
+						//style={styles.container}
+						behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+                        style={{ flex: 1 }}
+                        keyboardVerticalOffset={100}
+    
+						enabled
+					>
+                        <View style={{flex: 1, flexDirection: "row"}}>
+                            <TouchableOpacity
+                                onPress={() =>  this.props.onCloseAdd()}
+                            >
+                                <Text style={{fontSize: 20, paddingLeft: 20, paddingTop: 20, fontWeight: "bold"}}>
+                                    X
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={{
+                                position: 'absolute',
+                                width: Dimensions.get('window').width,
+                                justifyContent: 'center',
+                                alignItems: 'center'}}
+                            >
+                                <Text style={{ top: 20, fontWeight: "bold", fontSize: 20 }}>
+                                    {this.strings.transfer}
+                                </Text>
                             </View>
                         </View>
-                    : null }
 
-                </View>
-                <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
-                    <TouchableOpacity
-                        style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
-                        disabled={this.state.disableDoubleClick}
-                        onPress={() => {
-                            this.alertAddWithdraw();
-                        }}
-                    >
-                        <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>
-                    </TouchableOpacity>
-                </View>
+
+                        <View style={{flex: 8}}>{/* Flex vertical of 8/10 */}
+
+                            {this.state.currentBalance && this.state.providerBanks.length > 0 ?
+                                <View style={{flex: 1, paddingHorizontal: 20}}>
+                                    <View style={{ justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={styles.currentValueText}>{this.strings.your_balance}</Text>
+                                        <Text style={styles.currentValue}>{this.state.currentBalance}</Text>
+                                    </View>
+                                    <View style={{marginTop: 20}}>
+                                        <Text style={styles.formText}>{this.strings.bank_account}</Text>
+                                        <View style={Platform.OS === 'android' ? styles.form : {}}>
+                                            <Picker
+                                                selectedValue={this.state.bankSelected}
+                                                onValueChange={(itemValue, itemIndex) =>
+                                                    this.setState({bankSelected: itemValue})
+                                                }>
+                                                <Picker.Item key={0} itemStyle={{fontSize: 8}} value={0} label={this.strings.select} />
+                                                {this.state.providerBanks && this.state.providerBanks.length > 0 ? this.state.providerBanks.map((bank, i) => {
+                                                    return <Picker.Item key={i} value={bank.id} label={bank.bank + " - " + bank.account} />
+                                                }): null}
+                                            </Picker>
+                                        </View>
+                                    </View>
+
+                                    <View style={{marginTop: 20}}>
+                                        <Text style={styles.formValueTransfer}>{this.strings.transfer_value}</Text>
+                                        <View style={styles.form}>
+                                            <TextInput
+                                                style={{fontSize: 16, paddingLeft: 10}}
+                                                keyboardType='numeric'
+                                                placeholder={this.strings.write_value}
+                                                onChangeText={text => this.setState({ totalToAddWithdraw: text })}
+                                                value={this.state.totalToAddWithdraw ? String(this.state.totalToAddWithdraw) : null}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <View style={{marginTop: 20}}>
+
+                                        <View style={{flexDirection: "row"}}>
+                                            <View>
+                                                <Text style={styles.infoText}>
+                                                    {this.strings.min_value ?? ''}
+                                                </Text>
+                                            </View>
+                                            <View style={{flex: 1 }}>
+                                                <View style={styles.hr}></View>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.infoText}>
+                                                    {this.state.withdrawSettings.with_draw_min_limit ?? ''}
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={{flexDirection: "row"}}>
+                                            <View>
+                                                <Text style={styles.infoText}>
+                                                    {this.strings.max_value ?? ''}
+                                                </Text>
+                                            </View>
+                                            <View style={{flex: 1 }}>
+                                                <View style={styles.hr}></View>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.infoText}>
+                                                    {this.state.withdrawSettings.with_draw_max_limit ?? ''}
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={{flexDirection: "row"}}>
+                                            <View>
+                                                <Text style={styles.infoText}>
+                                                    {this.strings.withdraw_tax ?? ''}
+                                                </Text>
+                                            </View>
+                                            <View style={{flex: 1 }}>
+                                                <View style={styles.hr}></View>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.infoText}>
+                                                    {this.state.withdrawSettings.with_draw_tax ?? '-'}
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                    </View>
+                                </View>
+                            : null }
+
+                        </View>
+                        <View style={{ flex: 1, justifyContent: 'center' }}>{/* Flex vertical of 1/10 */}
+                            <TouchableOpacity
+                                style={{ borderRadius: 3, padding: 10, elevation: 2,marginHorizontal: 30, backgroundColor: this.props.buttonColor }}
+                                disabled={this.state.disableDoubleClick}
+                                onPress={() => {
+                                    this.alertAddWithdraw();
+                                }}
+                            >
+                                <Text style={{color: this.props.textColor, fontSize: 16, fontWeight: "bold", textAlign: "center" }}>{this.strings.add}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </KeyboardAvoidingView>
+                </ScrollView>
             </View>
         )
     }
@@ -314,6 +331,17 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         marginTop: 22
       },
+    parentContainer: {
+        flex: 1,
+        backgroundColor: "#ffffff",
+        //padding: 0
+    },
+
+    container:{
+
+      flex: 1,
+      backgroundColor: Colors.transparent
+    },
 
       text: {
         marginBottom: 15,
