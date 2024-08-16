@@ -1,23 +1,19 @@
 {
-    "name": "react-native-withdrawals",
-    "version": "1.0.0",
-    "description": "A bank withdrawal reporting component for react-native",
-    "main": "./src/index.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "license": "MIT",
-
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/codificar/react-native-withdrawals"
-    },
-
-    "author": "Codificar",
-  
-    "bugs": {
-      "url": "https://github.com/codificar/react-native-withdrawals/issues"
-    },
-
-    "homepage": "https://github.com/codificar/react-native-withdrawals#readme"
-  }
+  "name": "react-native-withdrawals",
+  "version": "1.0.0",
+  "description": "A bank withdrawal reporting component for react-native",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codificar/react-components-react-native-withdrawals"
+  },
+  "author": "Codificar",
+  "bugs": {
+    "url": "https://github.com/codificar/react-components-react-native-withdrawals/issues"
+  },
+  "homepage": "https://github.com/codificar/react-components-react-native-withdrawals#readme"
+}
